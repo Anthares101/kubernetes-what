@@ -337,3 +337,5 @@ Este último comando debería haber limpiado todo lo instalado por Helm, limpiem
 pi@raspberrypi:~/Downloads/kubernetes-what $ kubectl delete namespace kubernetes-what
 namespace "kubernetes-what" deleted
 ```
+
+**NOTA: ¡Recuerda limpiar también el archivo de hosts!**
