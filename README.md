@@ -115,7 +115,7 @@ spec:
 
 En este caso se puede controlar directamente el puerto que expondrá Kubernetes (Rago admitido: 30000-32767). Expongamos el servicio:
 ```bash
-pi@raspberrypi:~/Downloads $ kubectl apply -f sercice.yaml -n kubernetes-what
+pi@raspberrypi:~/Downloads $ kubectl apply -f service.yaml -n kubernetes-what
 service/nginx-svc created
 
 pi@raspberrypi:~/Downloads $ kubectl get services -n kubernetes-what
@@ -167,7 +167,7 @@ nginx-deployment-7c79c4bf97-48j9k   1/1     Running   0          57s
 
 Antes se ha comentado que existe un tipo de Service que sirve para exponer servicios de forma interna en el cluster, lo que viene genial para practicar con el reenvio de puertos que ofrece la CLI de Kubernetes. En primer lugar borremos el servicio del tipo NodePort anterior, en este caso se muestra como también es posible borrar un recurso a partir del YAML que lo creó:
 ```bash
-pi@raspberrypi:~/Downloads $ kubectl delete -f sercice.yaml -n kubernetes-what
+pi@raspberrypi:~/Downloads $ kubectl delete -f service.yaml -n kubernetes-what
 service "nginx-svc" deleted
 ```
 
@@ -188,7 +188,7 @@ spec:
 
 Ahora vamos a levantar el Service y nos aseguraremos de que efectivamente funciona como debe:
 ```bash
-pi@raspberrypi:~/Downloads $ kubectl apply -f sercice.yaml -n kubernetes-what
+pi@raspberrypi:~/Downloads $ kubectl apply -f service.yaml -n kubernetes-what
 service/nginx-svc created
 
 pi@raspberrypi:~/Downloads $ kubectl get service -n kubernetes-what

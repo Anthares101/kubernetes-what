@@ -1,0 +1,5 @@
+replicaCount: 1
+domain: kubernetes-what.lan
+
+image:
+  imageVersion: nginx:latest
