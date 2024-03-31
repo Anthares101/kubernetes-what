@@ -338,4 +338,4 @@ pi@raspberrypi:~/Downloads/kubernetes-what $ kubectl delete namespace kubernetes
 namespace "kubernetes-what" deleted
 ```
 
-**NOTA: ¡Recuerda limpiar también el archivo de hosts!**
+**NOTA: ¡Recuerda limpiar también el archivo `hosts`!**
