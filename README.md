@@ -12,6 +12,8 @@ minikube addons enable ingress
 kubectl create namespace kubernetes-what
 ```
 
+Para el último ejercicio necesitaremos también tener instalado [Helm](https://helm.sh/docs/intro/install/).
+
 ## Desplegando y exponiendo un Pod (Con comandos)
 
 Empecemos desplegando un Pod de Nginx en el cluster, pese a que no es habitual desplegar un Pod por si solo, para realizar pruebas es útil.
@@ -264,4 +266,74 @@ service "nginx-svc" deleted
 
 pi@raspberrypi:~/Downloads $ kubectl delete deployment nginx-deployment -n kubernetes-what
 deployment.apps "nginx-deployment" deleted
+```
+
+Utilizando la CLI de Helm, despleguemos el Chart que se incluye en este repositorio:
+
+```bash
+pi@raspberrypi:~/Downloads/kubernetes-what $ helm install demo-chart demo-chart/ -n kubernetes-what
+NAME: demo-chart
+LAST DEPLOYED: Sun Mar 31 19:04:19 2024
+NAMESPACE: kubernetes-what
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+```
+
+Si se revisa qué recursos se han desplegado en el Namespace `kubernetes-what`, notaremos que tenemos exactamente lo mismo que al final del ejercicio anterior. Prueba a acceder a `http://kubernetes-what.lan`.
+
+Los Charts de Helm ofrecen la posibilidad de personalizar los despliegues mediante los valores que se exponen en el archivo `values.yaml`. Estos valores se pueden cambiar ya sea modificando el archivo directamente o mediante cualquier otro de los métodos disponibles. Para no tener que volver a instalar el Chart vamos a actualizar nuestra instalación actual para aumentar las replicas de los Pods de Nginx, se podría hacer directamente editando el Deployment del cluster pero no es lo ideal:
+
+```
+pi@raspberrypi:~/Downloads/kubernetes-what $ kubectl get pods -n kubernetes-what
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-7c79c4bf97-5m7lb   1/1     Running   0          7m22s
+```
+
+Para no complicar demasiado el ejercicio, modifiquemos el archivo `values.yaml` del Chart que acabamos de usar:
+
+```yaml
+# demo-chart/values.yaml
+replicaCount: 3 # Vamos a aumentar las replicas
+domain: kubernetes-what.lan
+
+image:
+  imageVersion: nginx:latest
+
+```
+
+Actualicemos ahora la instalación del Chart que tenemos en el cluster:
+```bash
+pi@raspberrypi:~/Downloads/kubernetes-what $ helm upgrade demo-chart demo-chart/ -n kubernetes-what
+Release "demo-chart" has been upgraded. Happy Helming!
+NAME: demo-chart
+LAST DEPLOYED: Sun Mar 31 19:17:45 2024
+NAMESPACE: kubernetes-what
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+
+pi@raspberrypi:~/Downloads/kubernetes-what $ kubectl get pods -n kubernetes-what
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-7c79c4bf97-5m7lb   1/1     Running   0          13m
+nginx-deployment-7c79c4bf97-tfs2f   1/1     Running   0          24s
+nginx-deployment-7c79c4bf97-trdch   1/1     Running   0          24s
+```
+
+Como se puede ver, Helm facilita la gestión de aplicaciones de un cluster y lo hace más ameno. Antes de acabar, listemos con Helm los Charts instalados y desinstalemos todos los que tengamos en el Namespace `kubernetes-what`.
+
+```bash
+pi@raspberrypi:~/Downloads/kubernetes-what $ helm list -n kubernetes-what
+NAME            NAMESPACE       REVISION        UPDATED                                         STATUS          CHART                   APP VERSION
+demo-chart      kubernetes-what 2               2024-03-31 19:17:45.652379549 +0200 CEST        deployed        demo-chart-1.0.0        1.0.0
+
+pi@raspberrypi:~/Downloads/kubernetes-what $ helm uninstall demo-chart -n kubernetes-what
+release "demo-chart" uninstalled
+```
+
+Este último comando debería haber limpiado todo lo instalado por Helm, limpiemos ahora el Namespace que nos ha acompañado a lo largo de todos los ejercicios para terminar.
+
+```bash
+pi@raspberrypi:~/Downloads/kubernetes-what $ kubectl delete namespace kubernetes-what
+namespace "kubernetes-what" deleted
 ```
