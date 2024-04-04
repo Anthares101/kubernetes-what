@@ -43,8 +43,8 @@ nginx   NodePort   10.43.2.65   <none>        80:30279/TCP   3s
 ```
 
 Por limitaciones de Minikube (Recordemos que funciona en Docker), es necesario el siguiente para exponer un servicio de este tipo:
-```
-minikube service nginx --url
+```bash
+pi@raspberrypi:~ $ minikube service nginx --url -n kubernetes-what
 http://127.0.0.1:57123
 ```
 
