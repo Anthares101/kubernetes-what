@@ -18,8 +18,8 @@ Para el último ejercicio necesitaremos también tener instalado [Helm](https://
 
 Empecemos desplegando un Pod de Nginx en el cluster, pese a que no es habitual desplegar un Pod por si solo, para realizar pruebas es útil.
 ```bash
-pi@raspberrypi:~ $ kubectl create namespace kubernetes-what
-namespace/kubernetes-what created
+pi@raspberrypi:~ $ kubectl run nginx --image=nginx -n kubernetes-what
+pod/nginx created
 ```
 
 Al revisar el estado del Pod, deberíamos ver que está en estado `Running`:
@@ -42,7 +42,13 @@ NAME    TYPE       CLUSTER-IP   EXTERNAL-IP   PORT(S)        AGE
 nginx   NodePort   10.43.2.65   <none>        80:30279/TCP   3s
 ```
 
-Si puedes ver la página de bienvenida de Nginx en `http://127.0.0.1:30279` es que todo ha ido bien.
+Por limitaciones de Minikube (Recordemos que funciona en Docker), es necesario el siguiente para exponer un servicio de este tipo:
+```
+minikube service nginx --url
+http://127.0.0.1:57123
+```
+
+Si puedes ver la página de bienvenida de Nginx en `http://127.0.0.1:57123` es que todo ha ido bien.
 
 Vamos a dejar todo limpio:
 ```bash
